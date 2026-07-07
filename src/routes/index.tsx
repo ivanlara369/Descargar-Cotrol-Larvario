@@ -34,7 +34,12 @@ function Index() {
     setLoading(true);
     try {
       const payload = await Promise.all(
-        files.map(async (f) => ({ name: f.name, content: await f.text() })),
+        files.map(async (f) => {
+          const isTxt = /\.txt$/i.test(f.name) || f.type === "text/plain";
+          const buf = await f.arrayBuffer();
+          const decoder = new TextDecoder(isTxt ? "iso-8859-15" : "utf-8");
+          return { name: f.name, content: decoder.decode(buf) };
+        }),
       );
       const res = await sync({ data: { files: payload } });
       setResult(res);
