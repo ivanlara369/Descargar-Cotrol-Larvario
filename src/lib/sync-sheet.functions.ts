@@ -97,7 +97,16 @@ function parseFile(content: string): { headers: string[]; rows: string[][] } {
   });
   const all = parsed.data.filter((r) => Array.isArray(r) && r.length > 1);
   if (all.length === 0) return { headers: [], rows: [] };
-  const [headers, ...rows] = all;
+  const sanitizeCell = (v: unknown) =>
+    (v ?? "")
+      .toString()
+      // Quita BOM, caracteres de control (excepto tab) y espacios NBSP
+      .replace(/\uFEFF/g, "")
+      .replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, "")
+      .replace(/\u00A0/g, " ")
+      .trim();
+  const sanitizeRow = (r: string[]) => r.map(sanitizeCell);
+  const [headers, ...rows] = all.map(sanitizeRow);
   return { headers, rows };
 }
 
