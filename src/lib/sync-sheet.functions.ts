@@ -122,16 +122,19 @@ export const syncFilesToSheet = createServerFn({ method: "POST" })
       `/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(TAB_NAME)}!A1:ZZ`,
     );
     const existingValues: string[][] = existing.values || [];
-    const hasHeader = existingValues.length > 0;
-    const existingData = hasHeader ? existingValues.slice(1) : [];
+  const hasHeader = existingValues.length > 0;
+  const headerRow = hasHeader ? existingValues[0] : combinedHeaders;
+  const existingData = hasHeader ? existingValues.slice(1) : [];
 
     const seen = new Set<string>();
     const norm = (r: string[]) => r.map((c) => (c ?? "").toString().trim()).join("\u0001");
     for (const r of existingData) seen.add(norm(r));
+    const headerKey = norm(headerRow || []);
 
     const uniqueNew: string[][] = [];
     for (const r of incomingRows) {
       const key = norm(r);
+      if (key === headerKey) continue; // nunca duplicar encabezado
       if (seen.has(key)) continue;
       seen.add(key);
       uniqueNew.push(r);
@@ -146,6 +149,43 @@ export const syncFilesToSheet = createServerFn({ method: "POST" })
           body: JSON.stringify({ values: [combinedHeaders] }),
         },
       );
+      // Congelar fila 1 (encabezado fijo) + negrita
+      const meta = await sheetsFetch(`/spreadsheets/${spreadsheetId}`);
+      const tab = meta.sheets?.find(
+        (s: { properties: { title: string; sheetId: number } }) =>
+          s.properties.title === TAB_NAME,
+      );
+      const sheetId = tab?.properties?.sheetId;
+      if (sheetId !== undefined) {
+        await sheetsFetch(`/spreadsheets/${spreadsheetId}:batchUpdate`, {
+          method: "POST",
+          body: JSON.stringify({
+            requests: [
+              {
+                updateSheetProperties: {
+                  properties: {
+                    sheetId,
+                    gridProperties: { frozenRowCount: 1 },
+                  },
+                  fields: "gridProperties.frozenRowCount",
+                },
+              },
+              {
+                repeatCell: {
+                  range: { sheetId, startRowIndex: 0, endRowIndex: 1 },
+                  cell: {
+                    userEnteredFormat: {
+                      textFormat: { bold: true },
+                      backgroundColor: { red: 0.93, green: 0.93, blue: 0.93 },
+                    },
+                  },
+                  fields: "userEnteredFormat(textFormat,backgroundColor)",
+                },
+              },
+            ],
+          }),
+        });
+      }
     }
 
     // Append unique rows
