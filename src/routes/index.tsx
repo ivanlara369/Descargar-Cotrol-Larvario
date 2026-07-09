@@ -6,11 +6,11 @@ import { syncFilesToSheet } from "@/lib/sync-sheet.functions";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sincronizador de Control Larvario a Google Sheets" },
+      { title: "Descargas Cotrol Laravrio" },
       {
         name: "description",
         content:
-          "Sube archivos CSV o TXT de control larvario y consolida datos únicos en una hoja de Google Sheets.",
+          "Datos.",
       },
     ],
   }),
