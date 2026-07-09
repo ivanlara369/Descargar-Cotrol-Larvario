@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { syncFilesToSheet } from "@/lib/sync-sheet.functions";
@@ -61,6 +62,13 @@ function Index() {
           (mismo formato, primeras 3 filas se descartan). Los datos únicos se
           agregarán a una hoja en tu carpeta de Google Drive.
         </p>
+
+        <div className="mt-4 rounded-md border border-border bg-card p-3 text-sm">
+          <span className="text-muted-foreground">¿Vas a subir lecturas de ovitrampas? </span>
+          <Link to="/lecturas" className="font-medium text-primary hover:underline">
+            Ir al Sincronizador de Lectura de Ovitrampas →
+          </Link>
+        </div>
 
         <form
           onSubmit={onSubmit}
