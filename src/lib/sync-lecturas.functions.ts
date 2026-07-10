@@ -13,19 +13,29 @@ function authHeaders() {
 }
 
 async function sheetsFetch(path: string, init?: RequestInit) {
-  const res = await fetch(`${SHEETS_GW}${path}`, {
-    ...init,
-    headers: {
-      ...authHeaders(),
-      "Content-Type": "application/json",
-      ...(init?.headers || {}),
-    },
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Sheets ${res.status}: ${body}`);
+  const maxAttempts = 5;
+  let lastBody = "";
+  let lastStatus = 0;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const res = await fetch(`${SHEETS_GW}${path}`, {
+      ...init,
+      headers: {
+        ...authHeaders(),
+        "Content-Type": "application/json",
+        ...(init?.headers || {}),
+      },
+    });
+    if (res.ok) return res.json();
+    lastStatus = res.status;
+    lastBody = await res.text();
+    if (res.status !== 429 && res.status < 500) break;
+    const retryAfter = Number(res.headers.get("retry-after"));
+    const waitMs = Number.isFinite(retryAfter) && retryAfter > 0
+      ? retryAfter * 1000
+      : Math.min(30_000, 2000 * Math.pow(2, attempt));
+    await new Promise((r) => setTimeout(r, waitMs));
   }
-  return res.json();
+  throw new Error(`Sheets ${lastStatus}: ${lastBody}`);
 }
 
 function sanitizeCell(v: unknown) {
