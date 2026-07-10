@@ -80,7 +80,7 @@ export const syncLecturasToSheet = createServerFn({ method: "POST" })
     }
 
     const existing = await sheetsFetch(
-      `/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(TAB_NAME)}!A1:ZZ`,
+      `/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(TAB_NAME)}`,
     );
     const existingValues: string[][] = existing.values || [];
     const hasHeader = existingValues.length > 0;
