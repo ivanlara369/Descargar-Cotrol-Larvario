@@ -89,6 +89,20 @@ export const syncLecturasToSheet = createServerFn({ method: "POST" })
       for (const r of rows) incomingRows.push(r);
     }
 
+    // Ensure the tab exists; create it if missing.
+    const meta0 = await sheetsFetch(`/spreadsheets/${SPREADSHEET_ID}`);
+    const tabExists = meta0.sheets?.some(
+      (s: { properties: { title: string } }) => s.properties.title === TAB_NAME,
+    );
+    if (!tabExists) {
+      await sheetsFetch(`/spreadsheets/${SPREADSHEET_ID}:batchUpdate`, {
+        method: "POST",
+        body: JSON.stringify({
+          requests: [{ addSheet: { properties: { title: TAB_NAME } } }],
+        }),
+      });
+    }
+
     const existing = await sheetsFetch(
       `/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(TAB_NAME)}`,
     );
