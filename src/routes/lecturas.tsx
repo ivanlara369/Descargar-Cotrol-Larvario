@@ -44,7 +44,11 @@ function LecturasPage() {
             const decoder = new TextDecoder("utf-16le");
             content = decoder.decode(hasBom ? bytes.subarray(2) : bytes);
           } else {
-            content = new TextDecoder("iso-8859-15").decode(buf);
+            // CSV: intenta UTF-8; si aparece el carácter de reemplazo, cae a ISO-8859-15 (Latin-9)
+            const utf8 = new TextDecoder("utf-8", { fatal: false }).decode(buf);
+            content = utf8.includes("\uFFFD")
+              ? new TextDecoder("iso-8859-15").decode(buf)
+              : utf8;
           }
           return { name: f.name, content };
         }),
