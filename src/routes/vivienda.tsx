@@ -1,27 +1,26 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { syncFilesToSheet } from "@/lib/sync-sheet.functions";
+import { syncViviendaToSheet } from "@/lib/sync-vivienda.functions";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/vivienda")({
   head: () => ({
     meta: [
-      { title: "Descargas Cotrol Laravrio" },
+      { title: "Sincronizador Calidad de Vivienda" },
       {
         name: "description",
         content:
-          "Datos.",
+          "Sube archivos CSV o TXT de Calidad de Vivienda y sincroniza a Google Sheets.",
       },
     ],
   }),
-  component: Index,
+  component: ViviendaPage,
 });
 
-type Result = Awaited<ReturnType<typeof syncFilesToSheet>>;
+type Result = Awaited<ReturnType<typeof syncViviendaToSheet>>;
 
-function Index() {
-  const sync = useServerFn(syncFilesToSheet);
+function ViviendaPage() {
+  const sync = useServerFn(syncViviendaToSheet);
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,10 +35,21 @@ function Index() {
     try {
       const payload = await Promise.all(
         files.map(async (f) => {
-          const isTxt = /\.txt$/i.test(f.name) || f.type === "text/plain";
+          const isTxt = /\.txt$/i.test(f.name);
           const buf = await f.arrayBuffer();
-          const decoder = new TextDecoder(isTxt ? "iso-8859-15" : "utf-8");
-          return { name: f.name, content: decoder.decode(buf) };
+          let content: string;
+          if (isTxt) {
+            const bytes = new Uint8Array(buf);
+            const hasBom = bytes.length >= 2 && bytes[0] === 0xff && bytes[1] === 0xfe;
+            const decoder = new TextDecoder("utf-16le");
+            content = decoder.decode(hasBom ? bytes.subarray(2) : bytes);
+          } else {
+            const utf8 = new TextDecoder("utf-8", { fatal: false }).decode(buf);
+            content = utf8.includes("\uFFFD")
+              ? new TextDecoder("iso-8859-15").decode(buf)
+              : utf8;
+          }
+          return { name: f.name, content };
         }),
       );
       const res = await sync({ data: { files: payload } });
@@ -54,28 +64,18 @@ function Index() {
   return (
     <div className="min-h-screen bg-background px-4 py-12">
       <div className="mx-auto max-w-2xl">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Sincronizador Control Larvario
+        <Link to="/" className="text-sm text-muted-foreground hover:underline">
+          ← Volver al inicio
+        </Link>
+        <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground">
+          Sincronizador Calidad de Vivienda
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Sube uno o varios archivos <strong>.csv</strong> o <strong>.txt</strong>{" "}
-          (mismo formato, primeras 3 filas se descartan). Los datos únicos se
-          agregarán a una hoja en tu carpeta de Google Drive.
+          Sube uno o varios archivos <strong>.csv</strong> (se descartan las
+          primeras 3 filas de metadatos) o <strong>.txt</strong> (UTF-16, tabulado,
+          con encabezado en la primera fila). Los datos únicos se agregarán a la
+          hoja de Google configurada.
         </p>
-
-        <div className="mt-4 rounded-md border border-border bg-card p-3 text-sm">
-          <span className="text-muted-foreground">¿Vas a subir lecturas de ovitrampas? </span>
-          <Link to="/lecturas" className="font-medium text-primary hover:underline">
-            Ir al Sincronizador de Lectura de Ovitrampas →
-          </Link>
-        </div>
-
-        <div className="mt-2 rounded-md border border-border bg-card p-3 text-sm">
-          <span className="text-muted-foreground">¿Vas a subir Calidad de Vivienda? </span>
-          <Link to="/vivienda" className="font-medium text-primary hover:underline">
-            Ir al Sincronizador de Calidad de Vivienda →
-          </Link>
-        </div>
 
         <form
           onSubmit={onSubmit}
