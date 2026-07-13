@@ -7,7 +7,7 @@ import { syncFilesToSheet } from "@/lib/sync-sheet.functions";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Descargas Cotrol Laravrio" },
+      { title: "Descargas Cotrol Larvario" },
       {
         name: "description",
         content:
