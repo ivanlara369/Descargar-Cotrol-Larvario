@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ViviendaRouteImport } from './routes/vivienda'
 import { Route as LecturasRouteImport } from './routes/lecturas'
+import { Route as EntomologiaRouteImport } from './routes/entomologia'
 import { Route as IndexRouteImport } from './routes/index'
 
 const ViviendaRoute = ViviendaRouteImport.update({
@@ -23,6 +24,11 @@ const LecturasRoute = LecturasRouteImport.update({
   path: '/lecturas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EntomologiaRoute = EntomologiaRouteImport.update({
+  id: '/entomologia',
+  path: '/entomologia',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,30 +37,34 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/entomologia': typeof EntomologiaRoute
   '/lecturas': typeof LecturasRoute
   '/vivienda': typeof ViviendaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/entomologia': typeof EntomologiaRoute
   '/lecturas': typeof LecturasRoute
   '/vivienda': typeof ViviendaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/entomologia': typeof EntomologiaRoute
   '/lecturas': typeof LecturasRoute
   '/vivienda': typeof ViviendaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/lecturas' | '/vivienda'
+  fullPaths: '/' | '/entomologia' | '/lecturas' | '/vivienda'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/lecturas' | '/vivienda'
-  id: '__root__' | '/' | '/lecturas' | '/vivienda'
+  to: '/' | '/entomologia' | '/lecturas' | '/vivienda'
+  id: '__root__' | '/' | '/entomologia' | '/lecturas' | '/vivienda'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EntomologiaRoute: typeof EntomologiaRoute
   LecturasRoute: typeof LecturasRoute
   ViviendaRoute: typeof ViviendaRoute
 }
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LecturasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/entomologia': {
+      id: '/entomologia'
+      path: '/entomologia'
+      fullPath: '/entomologia'
+      preLoaderRoute: typeof EntomologiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EntomologiaRoute: EntomologiaRoute,
   LecturasRoute: LecturasRoute,
   ViviendaRoute: ViviendaRoute,
 }
