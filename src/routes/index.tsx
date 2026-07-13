@@ -70,6 +70,13 @@ function Index() {
           </Link>
         </div>
 
+        <div className="mt-2 rounded-md border border-border bg-card p-3 text-sm">
+          <span className="text-muted-foreground">¿Vas a subir Calidad de Vivienda? </span>
+          <Link to="/vivienda" className="font-medium text-primary hover:underline">
+            Ir al Sincronizador de Calidad de Vivienda →
+          </Link>
+        </div>
+
         <form
           onSubmit={onSubmit}
           className="mt-8 rounded-lg border border-border bg-card p-6 shadow-sm"
