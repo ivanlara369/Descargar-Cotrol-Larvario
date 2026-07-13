@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ViviendaRouteImport } from './routes/vivienda'
+import { Route as RociadoRouteImport } from './routes/rociado'
 import { Route as LecturasRouteImport } from './routes/lecturas'
 import { Route as EntomologiaRouteImport } from './routes/entomologia'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const ViviendaRoute = ViviendaRouteImport.update({
   id: '/vivienda',
   path: '/vivienda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RociadoRoute = RociadoRouteImport.update({
+  id: '/rociado',
+  path: '/rociado',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LecturasRoute = LecturasRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/entomologia': typeof EntomologiaRoute
   '/lecturas': typeof LecturasRoute
+  '/rociado': typeof RociadoRoute
   '/vivienda': typeof ViviendaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/entomologia': typeof EntomologiaRoute
   '/lecturas': typeof LecturasRoute
+  '/rociado': typeof RociadoRoute
   '/vivienda': typeof ViviendaRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/entomologia': typeof EntomologiaRoute
   '/lecturas': typeof LecturasRoute
+  '/rociado': typeof RociadoRoute
   '/vivienda': typeof ViviendaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/entomologia' | '/lecturas' | '/vivienda'
+  fullPaths: '/' | '/entomologia' | '/lecturas' | '/rociado' | '/vivienda'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/entomologia' | '/lecturas' | '/vivienda'
-  id: '__root__' | '/' | '/entomologia' | '/lecturas' | '/vivienda'
+  to: '/' | '/entomologia' | '/lecturas' | '/rociado' | '/vivienda'
+  id: '__root__' | '/' | '/entomologia' | '/lecturas' | '/rociado' | '/vivienda'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EntomologiaRoute: typeof EntomologiaRoute
   LecturasRoute: typeof LecturasRoute
+  RociadoRoute: typeof RociadoRoute
   ViviendaRoute: typeof ViviendaRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/vivienda'
       fullPath: '/vivienda'
       preLoaderRoute: typeof ViviendaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rociado': {
+      id: '/rociado'
+      path: '/rociado'
+      fullPath: '/rociado'
+      preLoaderRoute: typeof RociadoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lecturas': {
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EntomologiaRoute: EntomologiaRoute,
   LecturasRoute: LecturasRoute,
+  RociadoRoute: RociadoRoute,
   ViviendaRoute: ViviendaRoute,
 }
 export const routeTree = rootRouteImport

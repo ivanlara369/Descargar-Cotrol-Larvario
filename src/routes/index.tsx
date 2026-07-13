@@ -84,6 +84,13 @@ function Index() {
           </Link>
         </div>
 
+        <div className="mt-2 rounded-md border border-border bg-card p-3 text-sm">
+          <span className="text-muted-foreground">¿Vas a subir Rociado a Caso? </span>
+          <Link to="/rociado" className="font-medium text-primary hover:underline">
+            Ir al Sincronizador Rociado a Caso →
+          </Link>
+        </div>
+
         <form
           onSubmit={onSubmit}
           className="mt-8 rounded-lg border border-border bg-card p-6 shadow-sm"
