@@ -91,6 +91,13 @@ function Index() {
           </Link>
         </div>
 
+        <div className="mt-2 rounded-md border border-border bg-card p-3 text-sm">
+          <span className="text-muted-foreground">¿Vas a subir Rociado Intradomiciliar? </span>
+          <Link to="/intra" className="font-medium text-primary hover:underline">
+            Ir al Sincronizador Rociado Intradomiciliar →
+          </Link>
+        </div>
+
         <form
           onSubmit={onSubmit}
           className="mt-8 rounded-lg border border-border bg-card p-6 shadow-sm"
