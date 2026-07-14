@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import Papa from "papaparse";
 
-const SPREADSHEET_ID = "1vYTeqPSgkQtvpgNr06d5PRtEwkmQ5bqTGr5GYPuLHYk";
+const SPREADSHEET_ID = "1TaJTa0CYV0y3J5pxX1Nu8GYWb00nCsmhTP2NEI7plJY";
 const TAB_NAME = "Datos";
 const SHEETS_GW = "https://connector-gateway.lovable.dev/google_sheets/v4";
 
@@ -74,7 +74,7 @@ function parseFile(
   return { headers, rows };
 }
 
-export const syncRociadoToSheet = createServerFn({ method: "POST" })
+export const syncIntraToSheet = createServerFn({ method: "POST" })
   .inputValidator(
     (input: { files: { name: string; content: string }[] }) => input,
   )
