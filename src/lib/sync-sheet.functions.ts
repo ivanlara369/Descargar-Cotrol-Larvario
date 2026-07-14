@@ -1,10 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import Papa from "papaparse";
 
-const FOLDER_ID = "1yFGbzV1fv94dODsmdy08rowAdC2NdFEl";
-const SHEET_NAME = "ControlLarvario - Datos Unicos";
+const SPREADSHEET_ID = "1Ww-hTLbebsnCehF5mqWgkBstUYZJu8Es5U59shVsqAg";
 const TAB_NAME = "Datos";
-const DRIVE_GW = "https://connector-gateway.lovable.dev/google_drive/drive/v3";
 const SHEETS_GW = "https://connector-gateway.lovable.dev/google_sheets/v4";
 
 function authHeaders(connectorKey: string) {
@@ -12,21 +10,6 @@ function authHeaders(connectorKey: string) {
     Authorization: `Bearer ${process.env.LOVABLE_API_KEY}`,
     "X-Connection-Api-Key": connectorKey,
   };
-}
-
-async function driveFetch(path: string, init?: RequestInit) {
-  const res = await fetch(`${DRIVE_GW}${path}`, {
-    ...init,
-    headers: {
-      ...authHeaders(process.env.GOOGLE_DRIVE_API_KEY!),
-      ...(init?.headers || {}),
-    },
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Drive ${res.status}: ${body}`);
-  }
-  return res.json();
 }
 
 async function sheetsFetch(path: string, init?: RequestInit) {
@@ -45,46 +28,19 @@ async function sheetsFetch(path: string, init?: RequestInit) {
   return res.json();
 }
 
-async function findOrCreateSheet(): Promise<string> {
-  const q = encodeURIComponent(
-    `name='${SHEET_NAME}' and '${FOLDER_ID}' in parents and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false`,
-  );
-  const search = await driveFetch(
-    `/files?q=${q}&fields=files(id,name)&supportsAllDrives=true&includeItemsFromAllDrives=true`,
-  );
-  if (search.files?.length) return search.files[0].id;
-
-  // Create spreadsheet in the target folder using Drive (so it lands in the folder directly)
-  const created = await driveFetch(`/files?supportsAllDrives=true`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: SHEET_NAME,
-      mimeType: "application/vnd.google-apps.spreadsheet",
-      parents: [FOLDER_ID],
-    }),
-  });
-  const spreadsheetId = created.id as string;
-
-  // Rename the default first sheet to TAB_NAME
+async function ensureTab(spreadsheetId: string) {
   const meta = await sheetsFetch(`/spreadsheets/${spreadsheetId}`);
-  const firstSheetId = meta.sheets?.[0]?.properties?.sheetId;
-  if (firstSheetId !== undefined) {
+  const exists = meta.sheets?.some(
+    (s: { properties: { title: string } }) => s.properties.title === TAB_NAME,
+  );
+  if (!exists) {
     await sheetsFetch(`/spreadsheets/${spreadsheetId}:batchUpdate`, {
       method: "POST",
       body: JSON.stringify({
-        requests: [
-          {
-            updateSheetProperties: {
-              properties: { sheetId: firstSheetId, title: TAB_NAME },
-              fields: "title",
-            },
-          },
-        ],
+        requests: [{ addSheet: { properties: { title: TAB_NAME } } }],
       }),
     });
   }
-  return spreadsheetId;
 }
 
 function parseFile(content: string): { headers: string[]; rows: string[][] } {
@@ -115,7 +71,8 @@ export const syncFilesToSheet = createServerFn({ method: "POST" })
     (input: { files: { name: string; content: string }[] }) => input,
   )
   .handler(async ({ data }) => {
-    const spreadsheetId = await findOrCreateSheet();
+    const spreadsheetId = SPREADSHEET_ID;
+    await ensureTab(spreadsheetId);
 
     // Combine incoming rows
     let combinedHeaders: string[] = [];
