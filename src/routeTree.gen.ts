@@ -16,6 +16,7 @@ import { Route as LecturasRouteImport } from './routes/lecturas'
 import { Route as IntraRouteImport } from './routes/intra'
 import { Route as EntomologiaRouteImport } from './routes/entomologia'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicSyncLarvarioRouteImport } from './routes/api/public/sync-larvario'
 
 const ViviendaRoute = ViviendaRouteImport.update({
   id: '/vivienda',
@@ -52,6 +53,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSyncLarvarioRoute = ApiPublicSyncLarvarioRouteImport.update({
+  id: '/api/public/sync-larvario',
+  path: '/api/public/sync-larvario',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/nebulizacion': typeof NebulizacionRoute
   '/rociado': typeof RociadoRoute
   '/vivienda': typeof ViviendaRoute
+  '/api/public/sync-larvario': typeof ApiPublicSyncLarvarioRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/nebulizacion': typeof NebulizacionRoute
   '/rociado': typeof RociadoRoute
   '/vivienda': typeof ViviendaRoute
+  '/api/public/sync-larvario': typeof ApiPublicSyncLarvarioRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/nebulizacion': typeof NebulizacionRoute
   '/rociado': typeof RociadoRoute
   '/vivienda': typeof ViviendaRoute
+  '/api/public/sync-larvario': typeof ApiPublicSyncLarvarioRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/nebulizacion'
     | '/rociado'
     | '/vivienda'
+    | '/api/public/sync-larvario'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/nebulizacion'
     | '/rociado'
     | '/vivienda'
+    | '/api/public/sync-larvario'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/nebulizacion'
     | '/rociado'
     | '/vivienda'
+    | '/api/public/sync-larvario'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   NebulizacionRoute: typeof NebulizacionRoute
   RociadoRoute: typeof RociadoRoute
   ViviendaRoute: typeof ViviendaRoute
+  ApiPublicSyncLarvarioRoute: typeof ApiPublicSyncLarvarioRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/sync-larvario': {
+      id: '/api/public/sync-larvario'
+      path: '/api/public/sync-larvario'
+      fullPath: '/api/public/sync-larvario'
+      preLoaderRoute: typeof ApiPublicSyncLarvarioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   NebulizacionRoute: NebulizacionRoute,
   RociadoRoute: RociadoRoute,
   ViviendaRoute: ViviendaRoute,
+  ApiPublicSyncLarvarioRoute: ApiPublicSyncLarvarioRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
