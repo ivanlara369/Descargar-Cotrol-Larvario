@@ -186,4 +186,5 @@ export async function syncVivienda(
       duplicates: incomingRows.length - uniqueNew.length,
       existingBefore: existingData.length,
     };
-  });
+  }
+}
