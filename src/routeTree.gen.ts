@@ -17,6 +17,7 @@ import { Route as IntraRouteImport } from './routes/intra'
 import { Route as EntomologiaRouteImport } from './routes/entomologia'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicSyncViviendaRouteImport } from './routes/api/public/sync-vivienda'
+import { Route as ApiPublicSyncRociadoRouteImport } from './routes/api/public/sync-rociado'
 import { Route as ApiPublicSyncLecturasRouteImport } from './routes/api/public/sync-lecturas'
 import { Route as ApiPublicSyncLarvarioRouteImport } from './routes/api/public/sync-larvario'
 import { Route as ApiPublicSyncEntomologiaRouteImport } from './routes/api/public/sync-entomologia'
@@ -61,6 +62,11 @@ const ApiPublicSyncViviendaRoute = ApiPublicSyncViviendaRouteImport.update({
   path: '/api/public/sync-vivienda',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSyncRociadoRoute = ApiPublicSyncRociadoRouteImport.update({
+  id: '/api/public/sync-rociado',
+  path: '/api/public/sync-rociado',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicSyncLecturasRoute = ApiPublicSyncLecturasRouteImport.update({
   id: '/api/public/sync-lecturas',
   path: '/api/public/sync-lecturas',
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/api/public/sync-entomologia': typeof ApiPublicSyncEntomologiaRoute
   '/api/public/sync-larvario': typeof ApiPublicSyncLarvarioRoute
   '/api/public/sync-lecturas': typeof ApiPublicSyncLecturasRoute
+  '/api/public/sync-rociado': typeof ApiPublicSyncRociadoRoute
   '/api/public/sync-vivienda': typeof ApiPublicSyncViviendaRoute
 }
 export interface FileRoutesByTo {
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/api/public/sync-entomologia': typeof ApiPublicSyncEntomologiaRoute
   '/api/public/sync-larvario': typeof ApiPublicSyncLarvarioRoute
   '/api/public/sync-lecturas': typeof ApiPublicSyncLecturasRoute
+  '/api/public/sync-rociado': typeof ApiPublicSyncRociadoRoute
   '/api/public/sync-vivienda': typeof ApiPublicSyncViviendaRoute
 }
 export interface FileRoutesById {
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/api/public/sync-entomologia': typeof ApiPublicSyncEntomologiaRoute
   '/api/public/sync-larvario': typeof ApiPublicSyncLarvarioRoute
   '/api/public/sync-lecturas': typeof ApiPublicSyncLecturasRoute
+  '/api/public/sync-rociado': typeof ApiPublicSyncRociadoRoute
   '/api/public/sync-vivienda': typeof ApiPublicSyncViviendaRoute
 }
 export interface FileRouteTypes {
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
     | '/api/public/sync-entomologia'
     | '/api/public/sync-larvario'
     | '/api/public/sync-lecturas'
+    | '/api/public/sync-rociado'
     | '/api/public/sync-vivienda'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
     | '/api/public/sync-entomologia'
     | '/api/public/sync-larvario'
     | '/api/public/sync-lecturas'
+    | '/api/public/sync-rociado'
     | '/api/public/sync-vivienda'
   id:
     | '__root__'
@@ -157,6 +168,7 @@ export interface FileRouteTypes {
     | '/api/public/sync-entomologia'
     | '/api/public/sync-larvario'
     | '/api/public/sync-lecturas'
+    | '/api/public/sync-rociado'
     | '/api/public/sync-vivienda'
   fileRoutesById: FileRoutesById
 }
@@ -171,6 +183,7 @@ export interface RootRouteChildren {
   ApiPublicSyncEntomologiaRoute: typeof ApiPublicSyncEntomologiaRoute
   ApiPublicSyncLarvarioRoute: typeof ApiPublicSyncLarvarioRoute
   ApiPublicSyncLecturasRoute: typeof ApiPublicSyncLecturasRoute
+  ApiPublicSyncRociadoRoute: typeof ApiPublicSyncRociadoRoute
   ApiPublicSyncViviendaRoute: typeof ApiPublicSyncViviendaRoute
 }
 
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSyncViviendaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/sync-rociado': {
+      id: '/api/public/sync-rociado'
+      path: '/api/public/sync-rociado'
+      fullPath: '/api/public/sync-rociado'
+      preLoaderRoute: typeof ApiPublicSyncRociadoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/sync-lecturas': {
       id: '/api/public/sync-lecturas'
       path: '/api/public/sync-lecturas'
@@ -267,6 +287,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicSyncEntomologiaRoute: ApiPublicSyncEntomologiaRoute,
   ApiPublicSyncLarvarioRoute: ApiPublicSyncLarvarioRoute,
   ApiPublicSyncLecturasRoute: ApiPublicSyncLecturasRoute,
+  ApiPublicSyncRociadoRoute: ApiPublicSyncRociadoRoute,
   ApiPublicSyncViviendaRoute: ApiPublicSyncViviendaRoute,
 }
 export const routeTree = rootRouteImport
