@@ -18,6 +18,7 @@ import { Route as EntomologiaRouteImport } from './routes/entomologia'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicSyncViviendaRouteImport } from './routes/api/public/sync-vivienda'
 import { Route as ApiPublicSyncRociadoRouteImport } from './routes/api/public/sync-rociado'
+import { Route as ApiPublicSyncNebulizacionRouteImport } from './routes/api/public/sync-nebulizacion'
 import { Route as ApiPublicSyncLecturasRouteImport } from './routes/api/public/sync-lecturas'
 import { Route as ApiPublicSyncLarvarioRouteImport } from './routes/api/public/sync-larvario'
 import { Route as ApiPublicSyncIntraRouteImport } from './routes/api/public/sync-intra'
@@ -68,6 +69,12 @@ const ApiPublicSyncRociadoRoute = ApiPublicSyncRociadoRouteImport.update({
   path: '/api/public/sync-rociado',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSyncNebulizacionRoute =
+  ApiPublicSyncNebulizacionRouteImport.update({
+    id: '/api/public/sync-nebulizacion',
+    path: '/api/public/sync-nebulizacion',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicSyncLecturasRoute = ApiPublicSyncLecturasRouteImport.update({
   id: '/api/public/sync-lecturas',
   path: '/api/public/sync-lecturas',
@@ -102,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/api/public/sync-intra': typeof ApiPublicSyncIntraRoute
   '/api/public/sync-larvario': typeof ApiPublicSyncLarvarioRoute
   '/api/public/sync-lecturas': typeof ApiPublicSyncLecturasRoute
+  '/api/public/sync-nebulizacion': typeof ApiPublicSyncNebulizacionRoute
   '/api/public/sync-rociado': typeof ApiPublicSyncRociadoRoute
   '/api/public/sync-vivienda': typeof ApiPublicSyncViviendaRoute
 }
@@ -117,6 +125,7 @@ export interface FileRoutesByTo {
   '/api/public/sync-intra': typeof ApiPublicSyncIntraRoute
   '/api/public/sync-larvario': typeof ApiPublicSyncLarvarioRoute
   '/api/public/sync-lecturas': typeof ApiPublicSyncLecturasRoute
+  '/api/public/sync-nebulizacion': typeof ApiPublicSyncNebulizacionRoute
   '/api/public/sync-rociado': typeof ApiPublicSyncRociadoRoute
   '/api/public/sync-vivienda': typeof ApiPublicSyncViviendaRoute
 }
@@ -133,6 +142,7 @@ export interface FileRoutesById {
   '/api/public/sync-intra': typeof ApiPublicSyncIntraRoute
   '/api/public/sync-larvario': typeof ApiPublicSyncLarvarioRoute
   '/api/public/sync-lecturas': typeof ApiPublicSyncLecturasRoute
+  '/api/public/sync-nebulizacion': typeof ApiPublicSyncNebulizacionRoute
   '/api/public/sync-rociado': typeof ApiPublicSyncRociadoRoute
   '/api/public/sync-vivienda': typeof ApiPublicSyncViviendaRoute
 }
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/api/public/sync-intra'
     | '/api/public/sync-larvario'
     | '/api/public/sync-lecturas'
+    | '/api/public/sync-nebulizacion'
     | '/api/public/sync-rociado'
     | '/api/public/sync-vivienda'
   fileRoutesByTo: FileRoutesByTo
@@ -165,6 +176,7 @@ export interface FileRouteTypes {
     | '/api/public/sync-intra'
     | '/api/public/sync-larvario'
     | '/api/public/sync-lecturas'
+    | '/api/public/sync-nebulizacion'
     | '/api/public/sync-rociado'
     | '/api/public/sync-vivienda'
   id:
@@ -180,6 +192,7 @@ export interface FileRouteTypes {
     | '/api/public/sync-intra'
     | '/api/public/sync-larvario'
     | '/api/public/sync-lecturas'
+    | '/api/public/sync-nebulizacion'
     | '/api/public/sync-rociado'
     | '/api/public/sync-vivienda'
   fileRoutesById: FileRoutesById
@@ -196,6 +209,7 @@ export interface RootRouteChildren {
   ApiPublicSyncIntraRoute: typeof ApiPublicSyncIntraRoute
   ApiPublicSyncLarvarioRoute: typeof ApiPublicSyncLarvarioRoute
   ApiPublicSyncLecturasRoute: typeof ApiPublicSyncLecturasRoute
+  ApiPublicSyncNebulizacionRoute: typeof ApiPublicSyncNebulizacionRoute
   ApiPublicSyncRociadoRoute: typeof ApiPublicSyncRociadoRoute
   ApiPublicSyncViviendaRoute: typeof ApiPublicSyncViviendaRoute
 }
@@ -265,6 +279,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSyncRociadoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/sync-nebulizacion': {
+      id: '/api/public/sync-nebulizacion'
+      path: '/api/public/sync-nebulizacion'
+      fullPath: '/api/public/sync-nebulizacion'
+      preLoaderRoute: typeof ApiPublicSyncNebulizacionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/sync-lecturas': {
       id: '/api/public/sync-lecturas'
       path: '/api/public/sync-lecturas'
@@ -308,6 +329,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicSyncIntraRoute: ApiPublicSyncIntraRoute,
   ApiPublicSyncLarvarioRoute: ApiPublicSyncLarvarioRoute,
   ApiPublicSyncLecturasRoute: ApiPublicSyncLecturasRoute,
+  ApiPublicSyncNebulizacionRoute: ApiPublicSyncNebulizacionRoute,
   ApiPublicSyncRociadoRoute: ApiPublicSyncRociadoRoute,
   ApiPublicSyncViviendaRoute: ApiPublicSyncViviendaRoute,
 }
